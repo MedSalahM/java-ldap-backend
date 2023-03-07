@@ -40,8 +40,7 @@ public class ActiveDirectory {
         "userPrincipalName"
     };
 
-    private ActiveDirectory(){}
-
+  
 
   //**************************************************************************
   //** getConnection
@@ -53,7 +52,10 @@ public class ActiveDirectory {
         return getConnection(username, password, null, null);
     }
 
-
+    
+    public static LdapContext ldapContext =null;
+    
+    
   //**************************************************************************
   //** getConnection
   //*************************************************************************/
@@ -92,16 +94,18 @@ public class ActiveDirectory {
         String principalName = username + "@" + domainName;
         props.put(Context.SECURITY_PRINCIPAL, principalName);
         if (password!=null) props.put(Context.SECURITY_CREDENTIALS, password);
-
-
         String ldapURL = "ldap://" + ((serverName==null)? domainName : serverName + "." + domainName) + '/';
         
         
-        System.out.println(ldapURL);
         props.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
         props.put(Context.PROVIDER_URL, ldapURL);
         try{
-            return new InitialLdapContext(props, null);
+        	
+        	var context = new InitialLdapContext(props, null);
+        	
+        	ldapContext = context;
+        
+            return context;
         }
         catch(javax.naming.CommunicationException e){
         	
@@ -112,6 +116,7 @@ public class ActiveDirectory {
         catch(NamingException e){
             throw new NamingException("Failed to authenticate " + username + "@" + domainName + ((serverName==null)? "" : " through " + serverName));
         }
+        
     }
 
 
@@ -167,6 +172,8 @@ public class ActiveDirectory {
    */
     public static List<User>/*User[]*/ getUsers(LdapContext context) throws NamingException {
 
+    	
+    	
         java.util.ArrayList<User> users = new java.util.ArrayList<User>();
         String authenticatedUser = (String) context.getEnvironment().get(Context.SECURITY_PRINCIPAL);
         if (authenticatedUser.contains("@")){

@@ -9,7 +9,9 @@ public class RamiLdapApplication {
 	
 
 	public static void main(String[] args) {
+		
 		SpringApplication.run(RamiLdapApplication.class, args);
+		
 	}
 
 	

@@ -36,12 +36,7 @@ public class AppController {
 	@GetMapping("domaine")
 	public ResponseEntity<AD> connect() throws UnknownHostException {
 		
-		 System.out.println("inside controller");
-
-		
 		 var domaine =adLdapService.domaine();
-		
-		
 		
 		return ResponseEntity.ok(domaine);
 		
@@ -59,16 +54,12 @@ public class AppController {
 	}
 	
 	
-	
-	
 	@GetMapping("users")
-	public User [] users (@RequestParam String username , @RequestParam String password) throws NamingException {
+	public  List<User> users (/*@RequestParam String username , @RequestParam String password*/) throws NamingException {
 		
 		
-
-		//var ldap = ActiveDirectory.getConnection(username, password);
 		
-		return null;
+		return adLdapService.users();
 		
 		
 	}

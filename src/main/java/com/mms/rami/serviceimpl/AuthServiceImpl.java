@@ -2,20 +2,22 @@ package com.mms.rami.serviceimpl;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.naming.NamingException;
+import javax.naming.ldap.LdapContext;
 
 import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.mms.rami.domain.ResponseLogin;
+import com.mms.rami.domain.User;
 import com.mms.rami.service.ActiveDirectory;
 import com.mms.rami.service.AuthService;
 
 @Service
-
 public class AuthServiceImpl implements AuthService{
 
 	
@@ -23,8 +25,8 @@ public class AuthServiceImpl implements AuthService{
 	public ResponseLogin getToken(String username, String password) throws NamingException {
 
 		
-		ActiveDirectory.getConnection(username, password);
-		
+		LdapContext ctx=  ActiveDirectory.getConnection(username, password);
+	
 		
 		  Algorithm algorithm =Algorithm.HMAC256("toyota".getBytes());
 		     
@@ -35,6 +37,11 @@ public class AuthServiceImpl implements AuthService{
 		    		                  .withArrayClaim("roles", new String[]{"admin"})
 		    		                  
 		    		                  .sign(algorithm);
+		
+
+			
+	
+			
 			
 			
 		return ResponseLogin.builder().token(access_token).build();
